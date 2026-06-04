@@ -1,0 +1,427 @@
+# Chapter 02 - Inversion of Control (IoC)
+
+## Introduction
+
+Inversion of Control (IoC) is the foundation of the Spring Framework.
+
+Everything in Spring ultimately revolves around IoC.
+
+Before learning Dependency Injection, Beans, or Spring Boot internals, it is important to understand what IoC actually means and why it was introduced.
+
+Many developers describe IoC as:
+
+> Spring creates objects for us.
+
+While this statement is true, it does not fully explain the concept.
+
+To understand IoC properly, we must first understand what "control" means.
+
+---
+
+# What Is Control?
+
+Consider the following classes:
+
+```java
+public class UserRepository {
+
+}
+```
+
+```java
+public class UserService {
+
+    private UserRepository repository =
+            new UserRepository();
+}
+```
+
+```java
+public class UserController {
+
+    private UserService service =
+            new UserService();
+}
+```
+
+Here, every class is responsible for creating its own dependencies.
+
+Object creation flow:
+
+```text
+Developer
+    |
+    v
+UserController
+    |
+    v
+UserService
+    |
+    v
+UserRepository
+```
+
+The application code controls:
+
+* Object creation
+* Dependency wiring
+* Object lifecycle
+
+This ownership is called "control."
+
+---
+
+# Problems With Traditional Control
+
+As applications grow larger, dependency chains become more complex.
+
+Example:
+
+```text
+OrderController
+       |
+       v
+OrderService
+       |
+       +----> PaymentService
+       |
+       +----> InventoryService
+       |
+       +----> NotificationService
+       |
+       +----> AuditService
+```
+
+A large enterprise application may contain:
+
+```text
+500+ Classes
+1000+ Dependencies
+```
+
+Managing these objects manually becomes difficult.
+
+Common challenges include:
+
+* Dependency management
+* Lifecycle management
+* Object reuse
+* Testing complexity
+* Maintenance overhead
+
+---
+
+# The Core Idea Behind IoC
+
+Spring introduced a different approach.
+
+Instead of allowing application code to create objects, Spring takes over that responsibility.
+
+Traditional approach:
+
+```text
+Application
+      |
+Creates Objects
+      |
+Controls Dependencies
+```
+
+Spring approach:
+
+```text
+Application
+      |
+Requests Objects
+      |
+Spring Provides Objects
+```
+
+The application focuses on business logic.
+
+Spring focuses on object management.
+
+---
+
+# What Gets Inverted?
+
+Before Spring:
+
+```text
+Application controls objects.
+```
+
+After Spring:
+
+```text
+Framework controls objects.
+```
+
+The control of object creation and dependency management is transferred from the application to the framework.
+
+This transfer is called:
+
+```text
+Inversion of Control
+```
+
+Meaning:
+
+```text
+Control has moved
+from Application
+to Framework
+```
+
+---
+
+# Real World Analogy
+
+Imagine opening a restaurant.
+
+Without IoC:
+
+```text
+You hire staff.
+You manage schedules.
+You manage attendance.
+You manage salaries.
+```
+
+You control everything.
+
+With IoC:
+
+```text
+You hire a management company.
+
+You request:
+1 Chef
+2 Waiters
+1 Cashier
+
+The company provides and manages them.
+```
+
+You focus on running the restaurant.
+
+The management company handles staffing.
+
+Spring plays a similar role for application objects.
+
+---
+
+# IoC Container
+
+Spring uses a component called the IoC Container.
+
+The IoC Container is responsible for:
+
+* Creating objects
+* Managing objects
+* Storing objects
+* Injecting dependencies
+* Destroying objects
+
+Conceptually:
+
+```text
++-------------------------+
+|     IoC Container       |
+|-------------------------|
+| UserController          |
+| UserService             |
+| UserRepository          |
+| EmailService            |
+| PaymentService          |
++-------------------------+
+```
+
+Every Spring-managed object resides inside the container.
+
+---
+
+# Beans
+
+Objects managed by Spring are called Beans.
+
+Definition:
+
+```text
+Any object created and managed by Spring
+is called a Bean.
+```
+
+Example:
+
+```java
+@Service
+public class UserService {
+
+}
+```
+
+UserService becomes a Spring Bean.
+
+The IoC Container manages its lifecycle.
+
+---
+
+# Before IoC vs After IoC
+
+## Before IoC
+
+```java
+UserRepository repository =
+        new UserRepository();
+
+UserService service =
+        new UserService(repository);
+```
+
+The application creates all objects manually.
+
+---
+
+## After IoC
+
+```java
+@Service
+public class UserService {
+
+}
+```
+
+Spring creates and manages the object.
+
+The developer no longer manages object creation directly.
+
+---
+
+# IoC and Dependency Injection
+
+A common misconception is that IoC and Dependency Injection are the same concept.
+
+They are different.
+
+Relationship:
+
+```text
+IoC = Principle
+
+Dependency Injection = Technique
+```
+
+IoC defines the goal:
+
+```text
+Framework controls objects.
+```
+
+Dependency Injection is one of the mechanisms Spring uses to achieve that goal.
+
+---
+
+# Why IoC Is Important
+
+IoC provides several advantages:
+
+## Loose Coupling
+
+Classes are no longer responsible for creating dependencies.
+
+## Easier Testing
+
+Dependencies can be replaced with mocks or stubs.
+
+## Better Maintainability
+
+Object creation is centralized.
+
+## Scalability
+
+Large applications become easier to manage.
+
+## Cleaner Architecture
+
+Business logic remains separated from infrastructure concerns.
+
+---
+
+# High-Level Spring Startup Flow
+
+When a Spring application starts:
+
+```text
+Application Starts
+        |
+        v
+Spring Container Starts
+        |
+        v
+Scans Classes
+        |
+        v
+Creates Beans
+        |
+        v
+Stores Beans
+        |
+        v
+Injects Dependencies
+        |
+        v
+Application Ready
+```
+
+This startup process forms the basis of how Spring applications operate.
+
+---
+
+# Interview Notes
+
+## What is IoC?
+
+IoC is a design principle in which control of object creation and dependency management is transferred from application code to the framework.
+
+---
+
+## What Is Inverted?
+
+The responsibility for creating and managing objects is transferred from the application to Spring.
+
+---
+
+## What Is an IoC Container?
+
+The IoC Container is the Spring component responsible for creating, managing, and wiring application objects.
+
+---
+
+## What Is a Bean?
+
+A Bean is any object created and managed by the Spring Container.
+
+---
+
+## Difference Between IoC and Dependency Injection
+
+```text
+IoC = Principle
+
+Dependency Injection = Technique
+```
+
+Spring achieves IoC primarily through Dependency Injection.
+
+---
+
+# Key Takeaways
+
+1. IoC is the foundation of Spring.
+2. Before IoC, applications created and managed objects manually.
+3. Spring transfers object management responsibilities to the framework.
+4. The IoC Container manages application objects.
+5. Spring-managed objects are called Beans.
+6. IoC and Dependency Injection are related but not identical concepts.
+7. IoC improves maintainability, testability, scalability, and loose coupling.
