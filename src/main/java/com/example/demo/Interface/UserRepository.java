@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 //     }
 // }
 
+@Component
 public interface UserRepository {
     String getUser();
 }
